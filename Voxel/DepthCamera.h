@@ -363,18 +363,20 @@ bool DepthCamera::setROI(const RegionOfInterest &roi)
 template <typename T>
 bool DepthCamera::_get(const String &name, T &value, bool refresh) const
 {
-  auto p = _parameters.find(name);
-  
-  if(p != _parameters.end())
-  {
-    ParameterTemplate<T> *param = dynamic_cast<ParameterTemplate<T> *>(p->second.get());
-    
-    if(param == 0)
+    auto p=_parameters.find(name);
+    if(p != _parameters.end())
     {
-      logger(LOG_ERROR) << "DepthCamera: Invalid value type '" << typeid(value).name() << "' used to get parameter " << _id << "." << name << std::endl;
-      return false;
-    }
-    
+        ParameterTemplate<T> *param=NULL;
+        ////something wrong with rtti check ,I do not kown why .macos 10.12 sierra xcode 8.3.2
+        
+        param = dynamic_cast<ParameterTemplate<T> *>(p->second.get());
+        //param=(ParameterTemplate<T> *)(p->second.get());
+        if(param == 0)
+        {
+            logger(LOG_ERROR) << "DepthCamera: Invalid value type '" << typeid(value).name() << "' used to get parameter " << _id << "." << name << std::endl;
+            return false;
+        }
+        
     if(!param->get(value, refresh))
     {
       logger(LOG_ERROR) << "DepthCamera:Could not get value for parameter " << _id << "." << name << std::endl;
@@ -397,15 +399,17 @@ bool DepthCamera::_set(const String &name, const T &value)
   
   if(p != _parameters.end())
   {
-    logger(LOG_DEBUG) << "DepthCamera: Setting parameter '" << name << "' = " << value << std::endl;
-    ParameterTemplate<T> *param = dynamic_cast<ParameterTemplate<T> *>(p->second.get());
-    
-    if(param == 0)
-    {
-      logger(LOG_ERROR) << "DepthCamera: Invalid value type '" << typeid(value).name() << "' used to set parameter " << this->name() << "(" << _device->id() << ")." << name << std::endl;
-      return false;
-    }
-    
+      logger(LOG_DEBUG) << "DepthCamera: Setting parameter '" << name << "' = " << value << std::endl;
+      ParameterTemplate<T> *param=NULL;
+      //something wrong with rtti check ,I do not kown why .macos 10.12 sierra xcode 8.3.2
+      param = dynamic_cast<ParameterTemplate<T> *>(p->second.get());
+     // param=(ParameterTemplate<T> *)(p->second.get());
+      if(param == 0)
+      {
+          logger(LOG_ERROR) << "DepthCamera: Invalid value type '" << typeid(value).name() << "' used to set parameter " << this->name() << "(" << _device->id() << ")." << name << std::endl;
+          return false;
+      }
+      
     if(!param->set(value))
     {
       logger(LOG_ERROR) << "DepthCamera: Could not set value " << value << " for parameter " << this->name() << "(" << _device->id() << ")." << name << std::endl;

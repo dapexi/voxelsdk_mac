@@ -4,8 +4,8 @@
  * Copyright (c) 2014 Texas Instruments Inc.
  */
 
-#ifndef VOXEL_USBSYSTEMPRIVATELINUX_H
-#define VOXEL_USBSYSTEMPRIVATELINUX_H
+#ifndef VOXEL_USBSYSTEMPRIVATEAPPLE_H
+#define VOXEL_USBSYSTEMPRIVATEAPPLE_H
 
 #include "libusb.h"
 //#include <libudev.h>
@@ -76,4 +76,4 @@ public:
 
 }
 
-#endif // USBSYSTEMPRIVATELINUX_H
+#endif // USBSYSTEMPRIVATEAPPLE_H

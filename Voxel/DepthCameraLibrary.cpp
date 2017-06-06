@@ -164,7 +164,10 @@ DownloaderFactoryPtr DepthCameraLibrary::getDownloaderFactory()
 
 int DepthCameraLibrary::getABIVersion()
 {
-#if defined(LINUX) || defined(APPLE)
+#if defined(APPLE)
+    //elf load will fail on mac sierra 10.12 xcode 8.3.2 ,ignore it
+    return VOXEL_ABI_VERSION;
+#elif defined(LINUX)
   ELFIO::elfio reader;
   
   if(!reader.load(_libName))

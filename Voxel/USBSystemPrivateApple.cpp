@@ -14,6 +14,43 @@ Vector<DevicePtr> USBSystemPrivate::getDevices()
 {
   Vector<DevicePtr> devices;
   devices.reserve(10);
+    libusb_device** libusb_list;
+    
+    int count = libusb_get_device_list(_context, &libusb_list);
+    
+    uint8_t busNumber, devNumber;
+    libusb_device *selected = 0;
+    libusb_device_descriptor descriptor;
+    for (auto i = 0; i < count; i++)
+    {
+        int ret=libusb_get_device_descriptor(libusb_list[i],&descriptor);
+//        if ((busNumber == libusb_get_bus_number(libusb_list[i])) && (devNumber == libusb_get_device_address(libusb_list[i])))
+//            selected = libusb_list[i];
+//        else
+//            libusb_unref_device(libusb_list[i]);
+        printf("vid=%0xd,pid=%0xd,serail=%d\n",descriptor.idVendor,descriptor.idProduct,descriptor.iSerialNumber);
+        if(ret==0)
+        {
+            unsigned char serial[100];
+            struct libusb_device *usb_d=NULL;
+            //the handle of the opened usb device
+            struct libusb_device_handle *usb_p=NULL;
+            int ret=libusb_open(libusb_list[i],&usb_p);
+            if(ret!=0)
+            {
+                continue;
+            }
+                
+            
+            libusb_get_string_descriptor_ascii(usb_p,descriptor.iSerialNumber,serial,100);
+
+            devices.push_back(DevicePtr(new USBDevice(descriptor.idVendor, descriptor.idProduct, String((char *)serial), -1, "", "")));
+            libusb_close(usb_p);
+        }
+    }
+    
+    libusb_free_device_list(libusb_list, 0);
+    
 #if 0 // LCL 
   _iterateUDevUSB([&devices](struct udev_device *dev, uint16_t vendorID, uint16_t productID, const String &serial, const String &serialIndex, const String &description)
   {
@@ -26,26 +63,20 @@ Vector<DevicePtr> USBSystemPrivate::getDevices()
 
 libusb_device *USBSystemPrivate::getDeviceHandle(const USBDevice &usbd)
 {
-  uint8_t busNumber, devNumber;
-  
   if(!_context)
     return nullptr; // libusb is not initialized
-  
-  if(!getBusDevNumbers(usbd, busNumber, devNumber))
-  {
-    logger(LOG_ERROR) << "USBSystem: Failed to get bus and device numbers for device '" << usbd.id() << "'" << std::endl;
-    return nullptr;
-  }
-  
+
+
   libusb_device *selected = 0;
   
   libusb_device** libusb_list;
   
   int count = libusb_get_device_list(_context, &libusb_list); 
-  
+  libusb_device_descriptor descriptor;
   for (auto i = 0; i < count; i++)
   {
-    if ((busNumber == libusb_get_bus_number(libusb_list[i])) && (devNumber == libusb_get_device_address(libusb_list[i])))
+    int ret=libusb_get_device_descriptor(libusb_list[i],&descriptor);
+    if (ret==0 && usbd.vendorID()==descriptor.idVendor && usbd.productID()==descriptor.idProduct)
       selected = libusb_list[i];
     else
       libusb_unref_device(libusb_list[i]);
