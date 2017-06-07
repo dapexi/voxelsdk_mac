@@ -87,7 +87,7 @@ typedef Ptr<Parameter> ParameterPtr;
 
 // NOTE: _value is initialized to defaultValue and not read from H/W. It needs to be manually done from outside via set() or get(true)
 template <typename T>
-class ParameterTemplate: public Parameter
+class VOXEL_EXPORT ParameterTemplate: public Parameter
 {
 protected:
   T _value;
@@ -192,7 +192,7 @@ typedef ParameterTemplate<float> FloatParameterTemplate;
 #endif
 
 template <typename T>
-class EnumParameterTemplate: public ParameterTemplate<T>
+class VOXEL_EXPORT EnumParameterTemplate: public ParameterTemplate<T>
 {
 protected:
   Vector<String> _valueMeaning;
@@ -321,7 +321,7 @@ public:
 
 
 template<typename T>
-class RangeParameterTemplate : public ParameterTemplate<T>
+class VOXEL_EXPORT RangeParameterTemplate : public ParameterTemplate<T>
 {
 protected:
   T _lowerLimit, _upperLimit;
