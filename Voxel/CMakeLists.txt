@@ -1,6 +1,10 @@
 IF(LINUX)
   SET(OS_CPP_FILES 
     USBSystemPrivateLinux.cpp
+  UVCPrivateLinux.cpp 
+ UVCStreamer.cpp 
+  UVC.cpp
+  UVCXU.cpp
     )
 ELSEIF(WINDOWS)
   SET(OS_CPP_FILES 
@@ -111,6 +115,11 @@ install(FILES
   Timer.h
   TinyXML2.h
   USBSystem.h
+#IF(LINUX)
+  UVC.h
+  UVCStreamer.h
+  UVCXU.h
+#
   USBIO.h
   VideoMode.h
   PointCloudTransform.h

@@ -1,5 +1,5 @@
 find_package(Voxel ${VOXEL_VERSION} REQUIRED)
-find_package(PCL 1.8 REQUIRED COMPONENTS common io visualization)
+find_package(PCL 1.6 REQUIRED COMPONENTS common io visualization)
 
 IF(WINDOWS)
 #CMAKE_POLICY(SET CMP0028 OLD)
@@ -15,7 +15,7 @@ set_library_output_directory(voxelpcl)
 add_library(Voxel::voxelpcl ALIAS voxelpcl)
 
 target_include_directories(voxelpcl PRIVATE ${VOXEL_INCLUDE_DIRS} PUBLIC ${PCL_INCLUDE_DIRS} ${EIGEN_INCLUDE_DIRS})
-target_link_libraries(voxelpcl LINK_PUBLIC ${VOXEL_LIBRARIES} LINK_PRIVATE ${PCL_COMMON_LIBRARY} ${PCL_IO_LIBRARY} ${PCL_VISUALIZATION_LIBRARY} ${Boost_SYSTEM_LIBRARY_RELEASE})
+target_link_libraries(voxelpcl LINK_PUBLIC ${VOXEL_LIBRARIES} LINK_PRIVATE ${PCL_COMMON_LIBRARIES} ${PCL_IO_LIBRARIES} ${PCL_VISUALIZATION_LIBRARIES} )
 
 generate_export_header(voxelpcl
   EXPORT_FILE_NAME "VoxelPCLExports.h"
@@ -35,11 +35,17 @@ install(FILES
   COMPONENT voxelpcl_dev
 )
 
+IF(APPLE)
 set_target_properties(voxelpcl PROPERTIES 
                       VERSION ${VOXEL_VERSION} 
                       SOVERSION ${VOXEL_ABI_VERSION}
 		      LINK_FLAGS "-undefined dynamic_lookup")
 
+ELSEIF(LINUX)
+set_target_properties(voxelpcl PROPERTIES 
+                      VERSION ${VOXEL_VERSION} 
+                      SOVERSION ${VOXEL_ABI_VERSION})
+ENDIF()
 
 IF(LINUX)
   get_distribution_codename(codename)

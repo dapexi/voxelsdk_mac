@@ -1,4 +1,4 @@
-find_package(PCL 1.8 REQUIRED COMPONENTS common io visualization)
+find_package(PCL 1.6 REQUIRED COMPONENTS common io visualization)
 
 IF(WINDOWS)
 #CMAKE_POLICY(SET CMP0028 OLD)
@@ -9,11 +9,11 @@ add_definitions(${PCL_DEFINITIONS})
 
 add_executable(SimpleVoxelViewer SimpleVoxelViewer.cpp PCLViewer.cpp)
 target_include_directories(SimpleVoxelViewer PUBLIC ${PCL_INCLUDE_DIRS} ${EIGEN_INCLUDE_DIRS})
-target_link_libraries(SimpleVoxelViewer voxelpcl ${PCL_COMMON_LIBRARY} ${PCL_IO_LIBRARY} ${PCL_VISUALIZATION_LIBRARY})
+target_link_libraries(SimpleVoxelViewer voxelpcl ${PCL_COMMON_LIBRARIES} ${PCL_IO_LIBRARIES} ${PCL_VISUALIZATION_LIBRARIES})
 
 add_executable(VoxelCLI VoxelCLI.cpp CLIManager.cpp LineNoise.cpp PCLViewer.cpp)
 target_include_directories(VoxelCLI PUBLIC ${PCL_INCLUDE_DIRS} ${EIGEN_INCLUDE_DIRS})
-target_link_libraries(VoxelCLI voxelpcl ${PCL_COMMON_LIBRARY} ${PCL_IO_LIBRARY} ${PCL_VISUALIZATION_LIBRARY})
+target_link_libraries(VoxelCLI voxelpcl ${PCL_COMMON_LIBRARIES} ${PCL_IO_LIBRARIES} ${PCL_VISUALIZATION_LIBRARIES})
 
 IF(APPLE)
       SET_TARGET_PROPERTIES(VoxelCLI SimpleVoxelViewer PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
