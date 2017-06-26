@@ -12,8 +12,8 @@ set(VOXEL_CONF_VERSION 1)
 set(CMAKE_CXX_VISIBILITY_PRESET hidden)
 set(CMAKE_VISIBILITY_INLINES_HIDDEN 1)
 include(GenerateExportHeader)
-
-
+SET(CMAKE_LIBRARY_PATH "/usr/local/lib")
+link_directories("/usr/local/lib")
 set(CMAKE_INCLUDE_CURRENT_DIR 1)
 
 MESSAGE(${CMAKE_SYSTEM_NAME})

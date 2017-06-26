@@ -15,7 +15,7 @@ ELSEIF(APPLE)
     USBSystemPrivateApple.cpp
     )
 ENDIF()
-
+include_directories("/usr/local/include/libusb-1.0")
 add_library(voxel SHARED
   Device.cpp
   Common.cpp
